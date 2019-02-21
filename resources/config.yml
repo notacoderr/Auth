@@ -1,0 +1,25 @@
+######################
+# DO NOT CHANGE THIS #
+config-version: 2
+######################
+
+custom_name: "PDH Auth"
+custom_info: "please log in"
+
+remember_Login: true 
+#if true, players will be logged in immediately when they join back
+#but they have to be in the same ip
+
+grace-period: 5 # Example → mercy_time: 5 | unauth players will be kicked after 5 minutes
+    
+registration:
+  restriction:
+    min_char: 3
+    max_char: 24
+    max_account: 1
+    
+onLogin:
+  message-type: title # title, popup, msg #
+  message-1: "[PDH]"
+  message-2: "Welcome!" #will not work with msg
+  
