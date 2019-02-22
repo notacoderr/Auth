@@ -1,2 +1,1 @@
-# [ XenoBroadcaster ]
-- Converted for AutoEXP, by Xenophilicy
+LETS PLAYER REGISTER A NEW USERNAME !
