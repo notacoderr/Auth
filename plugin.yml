@@ -7,8 +7,8 @@ author: ItzCodeeeh
 
 commands:
   login:
-    description: "testing"
+    description: " Let's you input your password."
   logout:
-    description: "testing"
+    description: " Logs you out (which is nonsense btw)."
   register:
-    description: "testing"
+    description: " Let's you get rid of your nasty Xbox Gamertag."
