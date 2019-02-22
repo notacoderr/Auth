@@ -31,52 +31,35 @@ class leListener implements Listener{
 		$event->setPlayerClass(leCustomPlayer::class);
 	}
     
-	public function onLine(PlayerJoinEvent $event) : void
+	public function onLine(PlayerJoinEvent $event)
 	{
 		$player = $event->getPlayer();
 		$name = $player->getName();
-		switch($player->getPlayerStatus())
+		if($this->main->data->isCustomUsername($name) == false)//checks if player is not yet registered
 		{
-			case 1: //Unregistered
-				//$this->main->forms->sendRegistration($player);
-			break;
+			$string = $this->main->config->getNested("otherMessages.useRegister");
+			$string = str_replace("{NL}", TF::EOL, $string);
+			$player->sendMessage($string);
+		} else {
+
+			if($this->main->remember && $this->main->data->getIpAddress($name) == $player->getAddress())
+			{
+				return $this->main->LoginSuccess($player);
+			}
+
+			$string = $this->main->config->getNested("otherMessages.useLogin");
+			$string = str_replace("{NL}", TF::EOL, $string);
+			$player->sendMessage($string);
 			
-			case 2: //Logged out
-				$player->sendMessage(
-				TF::BOLD . TF::GOLD . "[ ATTENTION ]" . TF::EOL .
-				TF::BOLD . TF::WHITE . "Please /login to use the ff:" . TF::EOL .
-				TF::BOLD . TF::WHITE . "- Chat" . TF::EOL .
-				TF::BOLD . TF::WHITE . "- Move" . TF::EOL .
-				TF::BOLD . TF::WHITE . "- Run Commands" . TF::EOL .
-				TF::BOLD . TF::WHITE . "- See" . TF::EOL
-				);
-			
+			if($this->main->grace > 0)
+			{
 				if(!in_array($name, $this->main->notLoggedIn))
 				{
 					$this->main->notLoggedIn[$name] = $this->main->microtime_int();
 				}
-			break;
-			
-			case 3: //Logged in
-				switch($this->main->config->getNested("onLogin.message-type"))
-				{
-					case "msg":
-						$player->sendMessage($this->main->config->getNested("onLogin.message-1"));
-					break;
-					
-					case "popup":
-						$player->sendPopup($this->main->config->getNested("onLogin.message-1"));
-						$player->sendTip($this->main->config->getNested("onLogin.message-2"));
-					break;
-					
-					case "title":
-						$t = $this->main->config->getNested("onLogin.message-1");
-						$st = $this->main->config->getNested("onLogin.message-2");
-						$player->addTitle($t , $st);
-					break;
-				}
-			break;
+			}
 		}
+
 	}
 	
 	public function offLine(PlayerQuitEvent $event) : void
@@ -90,25 +73,26 @@ class leListener implements Listener{
 	
 	public function ifMoving(PlayerMoveEvent $event) : void
 	{
-		if($event->getPlayer()->getPlayerStatus() <> 3) $event->setCancelled();
+		if($event->getPlayer()->isLoggedIn == false) $event->setCancelled();
 	}
 	
 	public function ifChatting(PlayerChatEvent $event) : void
 	{
-		if($event->getPlayer()->getPlayerStatus() <> 3)
+		if($event->getPlayer()->isLoggedIn == false)
 		{
 			$event->setCancelled();
-			$event->getPlayer()->sendMessage(TF::BOLD . TF::GOLD . "You have to Login to use the Chat! [/login]");
+			$event->getPlayer()->sendMessage($this->main->config->getNested("otherMessages.notLoggedIn"));
 		}
 	}
 	
-	public function ifTryingCommands(PlayerCommandPreprocessEvent $event) : void
+	public function ifTryingCommands(PlayerCommandPreprocessEvent $event)
     {
-		$command = explode(" ", $event->getMessage());
-		if($event->getPlayer()->getPlayerStatus() <> 3 && $command[0] != "/login")
+		if($event->getPlayer()->isLoggedIn == false)
 		{
+			$command = explode(" ", $event->getMessage());
+			if($command[0] == "/login" || $command[0] == "/register") return;
 			$event->setCancelled();
-			$event->getPlayer()->sendMessage(TF::BOLD . TF::GOLD . "You have to Login to use the Chat! [/login]");
+			$event->getPlayer()->sendMessage($this->main->config->getNested("otherMessages.notLoggedIn"));
 		}
     }
 }

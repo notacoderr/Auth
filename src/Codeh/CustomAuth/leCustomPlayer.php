@@ -39,27 +39,25 @@ namespace Codeh\CustomAuth;
 
 use pocketmine\Player;
 use pocketmine\Server;
-use Codeh\CustomAuth\leMain;
-use function hi;
 
 class leCustomPlayer extends Player{
 
-	public $custom = false;
-	private $playerStatus = 1;
+	public $isCustomized = false, $isLoggedIn;
+	private $tries;
 
 	public function getName(): string
 	{
-		return ($this->custom) ? $this->username : $this->customize($this->username);
+		return ($this->isCustomized) ? $this->username : $this->customize($this->username);
 	}
 
 	public function getDisplayName(): string
 	{
-		return ($this->custom) ? $this->displayName : $this->customize($this->displayName);
+		return ($this->isCustomized) ? $this->displayName : $this->customize($this->displayName);
 	}
 
 	public function getLowerCaseName(): string
 	{
-		return ($this->custom) ? $this->iusername : strtolower($this->customize($this->iusername));
+		return ($this->isCustomized) ? $this->iusername : strtolower($this->customize($this->iusername));
 	}
 	
 	public function isLoggedIn() : bool
@@ -67,29 +65,31 @@ class leCustomPlayer extends Player{
 		return $this->isLoggedIn;
 	}
 	
-	public function getPlayerStatus() : int
+	public function getPlayerTries() : int
 	{
-		return $this->playerStatus;
+		return $this->tries;
 	}
 	
-	public function setPlayerStatus(int $status) : void
+	public function setPlayerTries(int $t) : void
 	{
-		$this->playerStatus = $status;
+		$this->tries = $t;
 	}
 	
 	private function customize(string $username) : string
 	{
 		$main = Server::getInstance()->getPluginManager()->getPlugin("CustomAuth");
-		if(is_null( $main->data->getUsername($username) ))
+		if(is_null($main->data->getUsername($username))) //this somehow works but not isCustomUsername
 		{
+			$this->isLoggedIn = false;
 			return $username;
 		} else {
 			$customuser = $main->data->getUsername($username);
 			$this->username = $customuser;
 			$this->displayName = $customuser;
 			$this->iusername = strtolower($customuser);
-			$this->custom = true;
-			$this->playerStatus = ($main->remember && $this->getAddress() == $main->data->getIpAddress($customuser)) ? 3 : 2;
+			$this->isCustomized = true;
+			$this->tries = 5;
+			$this->isLoggedIn = false;
 			return $customuser;
 		}
 	}

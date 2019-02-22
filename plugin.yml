@@ -6,5 +6,9 @@ description: A custom auth
 author: ItzCodeeeh
 
 commands:
-  custom:
+  login:
+    description: "testing"
+  logout:
+    description: "testing"
+  register:
     description: "testing"

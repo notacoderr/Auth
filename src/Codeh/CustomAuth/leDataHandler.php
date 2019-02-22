@@ -22,20 +22,19 @@ class leDataHandler{
 		$this->db->exec("CREATE TABLE IF NOT EXISTS ipaddress (username BLOB PRIMARY KEY COLLATE NOCASE, ip BLOB);");
 	}
 	
-	public function isCustom(string $string) : bool
+	public function isCustomUsername(string $username) : bool
 	{
-		$result = $this->db->query("SELECT * FROM xbox WHERE username = '$string';");
-		$array = $result->fetchArray(SQLITE3_ASSOC);
-		return empty($result) == false;
+		$user = $this->db->query("SELECT * FROM xbox WHERE username = '$username';")->fetchArray(SQLITE3_ASSOC) ["username"];
+		return is_string($user);
 	}
 	
 	/** USERNAME **/
 	public function setUsername(string $gamertag, string $username)
 	{
-		$stmt = $this->db->prepare("INSERT OR REPLACE INTO xbox (gamertag, username) VALUES (:gamertag, :username);")
-		->bindValue(":gamertag", $player->getName())
-		->bindValue(":username", $username)
-		->execute();
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO xbox (gamertag, username) VALUES (:gamertag, :username);");
+		$stmt->bindValue(":gamertag", $gamertag);
+		$stmt->bindValue(":username", $username);
+		$stmt->execute();
 	}
 	
 	public function getUsername(string $gamertag)
@@ -46,10 +45,10 @@ class leDataHandler{
 	/** PASSWORD **/
 	public function setPassword(string $username, string $password)
 	{
-		$stmt = $this->db->prepare("INSERT OR REPLACE INTO passwords (username, password) VALUES (:username, :password);")
-		->bindValue(":username", $username)
-		->bindValue(":password", hash("md5", $password))
-		->execute();
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO passwords (username, password) VALUES (:username, :password);");
+		$stmt->bindValue(":username", $username);
+		$stmt->bindValue(":password", hash("md5", $password));
+		$stmt->execute();
 	}
 	
 	public function getPassword(string $username)
@@ -60,10 +59,10 @@ class leDataHandler{
 	/** DISCORD **/
 	public function setDiscord(string $username, string $discord = null)
 	{
-		$stmt = $this->db->prepare("INSERT OR REPLACE INTO discords (username, discord) VALUES (:username, :discord);")
-		->bindValue(":username", $username)
-		->bindValue(":discord", $discord)
-		->execute();
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO discords (username, discord) VALUES (:username, :discord);");
+		$stmt->bindValue(":username", $username);
+		$stmt->bindValue(":discord", $discord);
+		$stmt->execute();
 	}
 	
 	public function getDiscord(string $username)
@@ -74,10 +73,10 @@ class leDataHandler{
 	/** IP ADDRESS **/
 	public function setIpAddress(string $username, string $address)
 	{
-		$this->db->prepare("INSERT OR REPLACE INTO ipaddress (username, ip) VALUES (:username, :ip);")
-		->bindValue(":username", $username)
-		->bindValue(":ip", $address)
-		->execute();
+		$stmt = $this->db->prepare("INSERT OR REPLACE INTO ipaddress (username, ip) VALUES (:username, :ip);");
+		$stmt->bindValue(":username", $username);
+		$stmt->bindValue(":ip", $address);
+		$stmt->execute();
 	}
 	
 	public function getIpAddress(string $username)

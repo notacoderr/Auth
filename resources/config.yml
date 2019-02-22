@@ -1,25 +1,59 @@
 ######################
 # DO NOT CHANGE THIS #
-config-version: 2
+config-version: 3
+######################
+# § <- just in case
+######################
+custom_name: "§l§bP§fD§eH §7[Auth]§r"
 ######################
 
-custom_name: "PDH Auth"
-custom_info: "please log in"
+    ## Important!!!, else your players will just get kicked
+    ## leave port blank if default (19132)
+server-ip: phoenixdrophigh.tk
+server-port:
 
+    ## if true, players will be logged in immediately when they join back
+    ## but they have to be in the same ip
 remember_Login: true 
-#if true, players will be logged in immediately when they join back
-#but they have to be in the same ip
 
-grace-period: 5 # Example → mercy_time: 5 | unauth players will be kicked after 5 minutes
+    ## Example → grace-period: 5 | unauth players will be kicked after 5 minutes | 0 to disable
+grace-period: 0
     
 registration:
   restriction:
     min_char: 3
-    max_char: 24
-    max_account: 1
+    max_char: 16
     
 onLogin:
-  message-type: title # title, popup, msg #
-  message-1: "[PDH]"
-  message-2: "Welcome!" #will not work with msg
+  message:
+    ## this will be called everytime a player successfully logs in
+    ## title, popup, msg, none
+    type: title
+    header: "[PDH]" #will not work with msg
+    text: "You have logged in!"
+  
+otherMessages:
+#############################
+## {NL} = New Line
+## These are Welcome messages
+#############################
+
+  useRegister: "[ ATTENTION ] {NL} §b§oPlease /register to unlock the ff: {NL}§f Chat, Move, Commands, Vision"
+  useLogin: "[ ATTENTION ] {NL} §b§oPlease /login to unlock the ff: {NL}§f Chat, Move, Commands, Vision"
+#################################################################################################
+## These messages will have the custom_name in their beginning, you might want to add spaces    #
+## And also, {NL} and § still works here                                                        #
+#################################################################################################
+  alreadyLoggedIn: " §c§oYou are already logged in"
+  alreadyRegistered: " §c§oYou are already registered"
+  
+  playerLogout: " §c§oYou have logged out"
+  
+  notLoggedIn: " §c§oYou are not logged in"
+  notRegistered: " §c§oYou are not registered"
+  
+  usernameNotAvailable: " §c§oThat username is not available"
+  
+  incorrectPW: " §c§oPassword is incorrect"
+  
   
