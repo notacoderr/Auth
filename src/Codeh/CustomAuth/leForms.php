@@ -38,7 +38,7 @@ class leForms{
             if ($data === null){
                 return;
             } else {
-				if(strlen($data[1]) > 15) return $player->sendMessage($this->main->customAuthName . T::RED . " Username exceeds the limit!");
+				if(strlen($data[1]) > 15 or strlen($data[1]) < 3 or $data[1] == "" or $data[1] == " ") return $player->sendMessage($this->main->customAuthName . T::RED . " Invalid Username");
 				if(strlen($data[2]) < $this->main->minChar) return $player->sendMessage($this->main->customAuthName . T::RED . " Password is less than " . $this->main->minChar);
 				if(strlen($data[2]) > $this->main->maxChar) return $player->sendMessage($this->main->customAuthName . T::RED . " Password is more than " . $this->main->maxChar);
 				$this->main->processRegistration($player, $data);
